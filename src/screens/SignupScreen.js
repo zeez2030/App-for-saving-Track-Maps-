@@ -1,41 +1,26 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet } from "react-native";
-import { Text, Input, Button } from "react-native-elements";
-import Spacer from "../components/Spacer";
+import NavLink from "../components/NavLink.js";
 import { Context as AuthContext } from "../context/authContext";
+import AuthForm from "../components/AuthForm";
+import { NavigationEvents } from "react-navigation";
 
 const SignupScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const { state, signup } = useContext(AuthContext);
+  const { state, signup, clearErrorMessage } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
-      <Spacer>
-        <Text h3>Sign Up for Tracker</Text>
-      </Spacer>
-
-      <Input
-        label="email"
-        value={email}
-        onChangeText={setEmail}
-        autoCorrect={false}
+      <NavigationEvents onWillBlur={clearErrorMessage} />
+      <AuthForm
+        headerText="Sign Up for Tracker"
+        errorMessage={state.errorMessage}
+        submitButtonText="Sign up"
+        onSubmit={signup}
       />
-      <Spacer />
-      <Input
-        secureTextEntry
-        label="password"
-        value={password}
-        onChangeText={setPassword}
-        autoCapitalize="none"
-        autoCorrect={false}
+      <NavLink
+        routeName="Signin"
+        text="Already have an account sign in instead"
       />
-      {state.errorMessage ? (
-        <Text style={styles.errorMessage}>{state.errorMessage}</Text>
-      ) : null}
-      <Spacer>
-        <Button title="Sign up" onPress={() => signup({ email, password })} />
-      </Spacer>
     </View>
   );
 };
@@ -51,12 +36,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     marginBottom: 150
-  },
-  errorMessage: {
-    fontSize: 16,
-    color: "red",
-    marginLeft: 15,
-    marginTop: 15
   }
 });
 
